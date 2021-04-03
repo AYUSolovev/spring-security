@@ -14,11 +14,16 @@ import java.util.List;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-    @Autowired
+
     private UserDao userDao;
 
-    @Autowired
     private RoleRepository roleRepository;
+
+    public UserServiceImpl(@Autowired UserDao userDao,
+                           @Autowired RoleRepository roleRepository) {
+        this.userDao = userDao;
+        this.roleRepository = roleRepository;
+    }
 
     public void addUser(User user) {
         if (userDao.loadUserByUsername(user.getLogin()) == null) {

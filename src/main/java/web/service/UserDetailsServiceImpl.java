@@ -12,8 +12,13 @@ import web.repository.UserDao;
 @Transactional
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
+
     private UserDao userDao;
+
+    @Autowired
+    public UserDetailsServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {

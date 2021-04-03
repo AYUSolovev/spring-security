@@ -18,10 +18,14 @@ import java.util.Set;
 @RequestMapping("/")
 public class UserController {
 
-    @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "hello", method = RequestMethod.GET)
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("hello")
     public String printWelcome(ModelMap model) {
         List<String> messages = new ArrayList<>();
         messages.add("Hello!");
@@ -31,7 +35,7 @@ public class UserController {
         return "hello";
     }
 
-    @RequestMapping(value = "login", method = RequestMethod.GET)
+    @GetMapping("login")
     public String loginPage() {
         return "login";
     }
@@ -66,8 +70,6 @@ public class UserController {
 
     @PostMapping("admin/update/{id}")
     public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
-        System.out.println(id);
-        System.out.println(user.getLogin());
         userService.updateUser(id, user);
         return "redirect:/admin/users";
     }
@@ -78,7 +80,7 @@ public class UserController {
         roleDefault.setRole("ROLE_USER");
         Set<Role> roleSet = new HashSet<>();
         roleSet.add(roleDefault);
-        if (role != null) {
+        if (role.indexOf("ROLE_") != -1) {
             Role temp = new Role();
             temp.setRole(role);
             roleSet.add(temp);
@@ -96,7 +98,6 @@ public class UserController {
 
     @PostMapping("admin/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
-        System.out.println(id);
         userService.deleteUser(id);
         return "redirect:/admin/users";
     }

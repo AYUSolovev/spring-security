@@ -13,15 +13,24 @@ import java.util.List;
 @Repository
 public class UserDaoImpl implements UserDao {
 
-    @Autowired
     private UserRepository userRepository;
 
     @PersistenceContext
     private EntityManager em;
 
+    public UserDaoImpl(@Autowired UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Override
     public void updateUser(Long id, User user) {
-        em.merge(user);
+        User u = getUser(id);
+        u.setLogin(user.getLogin());
+        u.setPassword(user.getPassword());
+        u.setLastName(user.getLastName());
+        u.setFirstName(user.getFirstName());
+        u.setEmail(user.getEmail());
+        em.merge(u);
     }
 
     @Override
