@@ -9,7 +9,9 @@ import web.model.User;
 import web.repository.RoleRepository;
 import web.repository.UserDao;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -25,10 +27,20 @@ public class UserServiceImpl implements UserService {
         this.roleRepository = roleRepository;
     }
 
-    public void addUser(User user) {
+    public void addUser(User user, String role) {
+        Role roleDefault = new Role();
+        roleDefault.setRole("ROLE_USER");
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(roleDefault);
+        if (role.indexOf("ROLE_") != -1) {
+            Role temp = new Role();
+            temp.setRole(role);
+            roleSet.add(temp);
+        }
+        user.setRoles(roleSet);
         if (userDao.loadUserByUsername(user.getLogin()) == null) {
-            for (Role role : user.getRoles()) {
-                roleRepository.save(role);
+            for (Role temp : user.getRoles()) {
+                roleRepository.save(temp);
             }
             userDao.addUser(user);
         }

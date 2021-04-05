@@ -76,17 +76,7 @@ public class UserController {
 
     @PostMapping("admin/add")
     public String addUser(@ModelAttribute("user") User user, @RequestParam(value = "role", required = false) String role) {
-        Role roleDefault = new Role();
-        roleDefault.setRole("ROLE_USER");
-        Set<Role> roleSet = new HashSet<>();
-        roleSet.add(roleDefault);
-        if (role.indexOf("ROLE_") != -1) {
-            Role temp = new Role();
-            temp.setRole(role);
-            roleSet.add(temp);
-        }
-        user.setRoles(roleSet);
-        userService.addUser(user);
+        userService.addUser(user, role);
         return "redirect:/admin/users";
     }
 

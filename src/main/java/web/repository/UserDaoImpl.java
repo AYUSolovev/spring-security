@@ -2,6 +2,7 @@ package web.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Repository;
 import web.model.User;
 
@@ -26,7 +27,7 @@ public class UserDaoImpl implements UserDao {
     public void updateUser(Long id, User user) {
         User u = getUser(id);
         u.setLogin(user.getLogin());
-        u.setPassword(user.getPassword());
+        u.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt()));
         u.setLastName(user.getLastName());
         u.setFirstName(user.getFirstName());
         u.setEmail(user.getEmail());
@@ -45,6 +46,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void addUser(User user) {
+        user.setPassword(BCrypt.hashpw(user.getPassword(),BCrypt.gensalt()));
         userRepository.save(user);
     }
 
